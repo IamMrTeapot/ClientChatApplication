@@ -12,7 +12,7 @@ export default function Message({
       <div>
         {!isSender && <div>{name}</div>}
         <div
-          className={`py-3 px-2 rounded-md ${
+          className={`py-3 px-4 rounded-md ${
             isSender ? "bg-[#E7E7E7]" : "bg-[#FFD523]"
           }  text-[#3B3B3B] w-fit`}
         >

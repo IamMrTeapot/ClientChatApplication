@@ -1,59 +1,70 @@
-import { useState } from "react";
+import { ChangeEvent, useState } from "react";
 import { FaImage, FaPen } from "react-icons/fa";
 import { MdSend } from "react-icons/md";
-import Message from "./Message";
+import MessageList from "./MessageList";
 
-interface Message {
+export interface IMessage {
   text: string;
   isSender: boolean;
   name?: string;
+  image?: File;
 }
 
-const mockMessageList: Message[] = [
+const mockMessageList: IMessage[] = [
   {
-    text: "Hello, this is a mock message",
+    text: "Hi John, how are you?",
     isSender: true,
+    name: "Jane Doe",
+  },
+  {
+    text: "I'm good, Jane. Thanks for asking. How about you?",
+    isSender: false,
     name: "John Doe",
   },
   {
-    text: "This is another mock message",
-    isSender: false,
+    text: "I'm doing well, thank you. Are you ready for the meeting today?",
+    isSender: true,
     name: "Jane Doe",
   },
   {
-    text: "And this is yet another mock message",
-    isSender: true,
-  },
-  {
-    text: "This is the last mock message",
+    text: "Yes, I've prepared the documents. See you there.",
     isSender: false,
-    name: "Jane Doe",
-  },
-  //mock more
-  {
-    text: "Hello, this is a mock message",
-    isSender: true,
     name: "John Doe",
   },
   {
-    text: "This is another mock message",
-    isSender: false,
+    text: "Great, see you at the meeting.",
+    isSender: true,
     name: "Jane Doe",
   },
   {
-    text: "And this is yet another mock message",
-    isSender: true,
+    text: "Sure, see you there.",
+    isSender: false,
+    name: "John Doe",
   },
   {
-    text: "This is the last mock message",
+    text: "Bye for now.",
+    isSender: true,
+    name: "Jane Doe",
+  },
+  {
+    text: "Goodbye, Jane.",
     isSender: false,
+    name: "John Doe",
   },
 ];
-
 export default function RightSide() {
   const name = "Mock Username";
   const [inputMessage, setInputMessage] = useState("");
-  const [messageList, setMessageList] = useState<Message[]>(mockMessageList);
+  const [messageList, setMessageList] = useState<IMessage[]>(mockMessageList);
+  const [selectedFile, setSelectedFile] = useState<File | undefined>(undefined);
+
+  const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    setSelectedFile(file);
+
+    // Debugging: Display the file name
+    console.log(file?.name);
+  };
 
   const handleSendMessage = () => {
     alert(inputMessage);
@@ -61,17 +72,21 @@ export default function RightSide() {
 
   return (
     <div className="bg-[#3B3B3B] h-full text-white flex flex-col justify-between">
-      <div className="h-[10%] py-4 bg-[#595260] flex items-center px-6 font-bold gap-4 text-medium">
+      <div className="h-[10%] py-4 bg-[#595260] flex items-center px-6 font-medium gap-4 text-xl">
         {name}
         <FaPen size={15} className="cursor-pointer" />
       </div>
-      <div className="pt-6 pb-3 overflow-auto flex flex-col gap-2">
-        {messageList.map((message, index) => (
-          <Message key={index} {...message} />
-        ))}
-      </div>
+      <MessageList messageList={messageList} />
       <div className="h-[10%] bg-[#bfbec2] flex items-center ps-6 pe-4 py-2 relative">
-        <FaImage size={30} color="#2C2E43" className="cursor-pointer" />
+        <label htmlFor="file-input">
+          <FaImage size={30} color="#2C2E43" className="cursor-pointer" />
+        </label>
+        <input
+          type="file"
+          id="file-input"
+          className="hidden"
+          onChange={handleFileChange}
+        />
         <input
           className="bg-white ms-6 w-full h-[35px] 
           rounded-xl flex items-center justify-between
