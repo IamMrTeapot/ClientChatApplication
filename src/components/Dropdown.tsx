@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { MdKeyboardArrowDown, MdKeyboardArrowUp } from "react-icons/md";
-import DropdownItem from "./DropdownItem";
+import DropdownItem, { IDropdownItem } from "./DropdownItem";
 import { FaPlus } from "react-icons/fa6";
 
 export type DropdownType =
@@ -16,7 +16,13 @@ const titleMapper: Record<DropdownType, string> = {
   ALL_GROUPS: "# all groups",
 };
 
-export default function Dropdown({ type }: { type: DropdownType }) {
+export default function Dropdown({
+  type,
+  dropdownList,
+}: {
+  type: DropdownType;
+  dropdownList: IDropdownItem[];
+}) {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   const handleCreateGroup = () => {
@@ -46,14 +52,7 @@ export default function Dropdown({ type }: { type: DropdownType }) {
           )}
         </div>
       </div>
-      {isDropdownOpen && (
-        <DropdownItem
-          name={"Test"}
-          identity={""}
-          isFocus={false}
-          hasModal={type === "ALL_GROUPS" || type === "ALL_USERS"}
-        />
-      )}
+      {isDropdownOpen && dropdownList.map((item) => <DropdownItem {...item} />)}
     </div>
   );
 }

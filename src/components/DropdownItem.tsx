@@ -5,17 +5,19 @@ import { useState } from "react";
 const focusClasses = "bg-white text-black border-2 border-black";
 const blurClasses = "bg-[#9a979f] text-white";
 
+export interface IDropdownItem {
+  name: string;
+  isFocus: boolean;
+  identity: string;
+  hasModal: boolean;
+}
+
 export default function DropdownItem({
   name,
   isFocus,
   identity,
   hasModal,
-}: {
-  name: string;
-  isFocus: boolean;
-  identity: string;
-  hasModal: boolean;
-}) {
+}: IDropdownItem) {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleJoinChat = (identity: string) => {
