@@ -2,13 +2,7 @@ import { ChangeEvent, useState } from "react";
 import { FaImage, FaPen } from "react-icons/fa";
 import { MdSend } from "react-icons/md";
 import MessageList from "./MessageList";
-
-export interface IMessage {
-  text: string;
-  isSender: boolean;
-  name?: string;
-  image?: File;
-}
+import { IMessage } from "./Message";
 
 const mockMessageList: IMessage[] = [
   {

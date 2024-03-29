@@ -1,5 +1,4 @@
-import Message from "./Message";
-import { IMessage } from "./RightSide";
+import Message, { IMessage } from "./Message";
 
 export default function MessageList({
   messageList,
