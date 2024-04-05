@@ -2,7 +2,9 @@ import { useState } from "react";
 import ModalOverlay from "./ModalOverlay";
 import { useDispatch, useSelector } from "react-redux";
 import { connection } from "../redux/features/userSlice";
-import { RootState } from "../redux/store";
+import { AppRootState } from "../redux/store";
+import { mySocket } from "../config/socketClient";
+import { socketEmitChannel } from "../types/SocketTypes";
 
 export default function UsernameModal({
   isVisible,
@@ -11,7 +13,7 @@ export default function UsernameModal({
   isVisible: boolean;
   onClose: () => void;
 }) {
-  const username = useSelector((state: RootState) => state.userSlice.user);
+  const username = useSelector((state: AppRootState) => state.userSlice.user);
   const dispatch = useDispatch();
   const [inputUsername, setInputUsername] = useState<string>(username || "");
 
@@ -29,6 +31,7 @@ export default function UsernameModal({
       return;
     }
     dispatch(connection(inputUsername));
+    mySocket.emit(socketEmitChannel.JOIN, inputUsername);
     onClose();
   };
 

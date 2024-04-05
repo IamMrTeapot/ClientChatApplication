@@ -3,9 +3,16 @@ export interface IMessage {
   isSender: boolean;
   name?: string;
   image?: File;
+  time?: string;
 }
 
-export default function Message({ text, isSender, name, image }: IMessage) {
+export default function Message({
+  text,
+  isSender,
+  name,
+  image,
+  time,
+}: IMessage) {
   return (
     <div className={`w-full flex px-4 ${isSender ? "justify-end" : ""}`}>
       <div>

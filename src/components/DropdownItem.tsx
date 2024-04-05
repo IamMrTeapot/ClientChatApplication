@@ -1,9 +1,13 @@
 import { PiDotsThreeOutlineVerticalFill } from "react-icons/pi";
 import JoinChatDropDown from "./JoinChatDropdown";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../redux/store";
+import { AppRootState } from "../redux/store";
 import { selectChat } from "../redux/features/userSlice";
+import { mySocket } from "../config/socketClient";
+import { socketEmitChannel } from "../types/SocketTypes";
+import { DropdownType } from "./Dropdown";
+import { updateGroupChat } from "../redux/features/chatSlice";
 
 const focusClasses = "bg-white text-black border-2 border-black";
 const blurClasses = "bg-[#9a979f] text-white";
@@ -14,26 +18,42 @@ export interface IDropdownItem {
   hasModal: boolean;
 }
 
+interface IDropdownItemProps extends IDropdownItem {
+  type: DropdownType;
+}
+
 export default function DropdownItem({
   name,
   identity,
   hasModal,
-}: IDropdownItem) {
+  type,
+}: IDropdownItemProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const dispatch = useDispatch();
   const { selectedChatIdentity } = useSelector(
-    (state: RootState) => state.userSlice
+    (state: AppRootState) => state.userSlice
   );
+
   const isFocus = selectedChatIdentity === identity;
+  const isGroup = type === "ALL_GROUPS";
 
-  const handleJoinChat = (name: string, identity: string) => {
-    //TODO: implement joining chat
-    alert(`Joining chat with ${name} ${identity}`);
-  };
+  const handleJoinChat = useCallback((identity: string, isGroup: boolean) => {
+    //TODO: implement joining private chat
+    if (isGroup) {
+      dispatch(updateGroupChat({ identity, message: null }));
+      mySocket.emit(socketEmitChannel.JOIN_GROUP, identity);
+    } else {
+      alert("Private Chat Joining is not implemented yet!");
+    }
+  }, []);
 
-  const handleSelectChat = (name: string, identity: string) => {
+  const handleSelectChat = (
+    name: string,
+    identity: string,
+    isGroup: boolean
+  ) => {
     if (hasModal) return;
-    dispatch(selectChat({ name, identity }));
+    dispatch(selectChat({ name, identity, isGroup }));
   };
 
   return (
@@ -41,7 +61,7 @@ export default function DropdownItem({
       className={`w-[95%] h-[40px] rounded-md 
     flex items-center ps-4 pe-2 justify-between cursor-pointer box-border
     ${isFocus && !hasModal ? focusClasses : blurClasses}`}
-      onClick={() => handleSelectChat(name, identity)}
+      onClick={() => handleSelectChat(name, identity, isGroup)}
     >
       <p>{name}</p>
       {hasModal && (
@@ -55,9 +75,9 @@ export default function DropdownItem({
           <PiDotsThreeOutlineVerticalFill />
           {isModalOpen && (
             <JoinChatDropDown
-              isGroup={false}
+              isGroup={isGroup}
               onJoin={() => {
-                handleJoinChat(name, identity);
+                handleJoinChat(identity, isGroup);
                 setIsModalOpen(false);
               }}
               onCancel={() => setIsModalOpen(false)}

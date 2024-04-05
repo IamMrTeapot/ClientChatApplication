@@ -52,7 +52,10 @@ export default function Dropdown({
           )}
         </div>
       </div>
-      {isDropdownOpen && dropdownList.map((item) => <DropdownItem {...item} />)}
+      {isDropdownOpen &&
+        dropdownList.map((item) => (
+          <DropdownItem {...item} type={type} key={item.identity} />
+        ))}
     </div>
   );
 }

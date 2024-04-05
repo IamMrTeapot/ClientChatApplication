@@ -4,7 +4,7 @@ import { MdSend } from "react-icons/md";
 import MessageList from "./MessageList";
 import { IMessage } from "./Message";
 import { useSelector } from "react-redux";
-import { RootState } from "../redux/store";
+import { AppRootState } from "../redux/store";
 
 const mockMessageList: IMessage[] = [
   {
@@ -50,10 +50,18 @@ const mockMessageList: IMessage[] = [
 ];
 export default function RightSide() {
   const name = useSelector(
-    (state: RootState) => state.userSlice.selectedChatName
+    (state: AppRootState) => state.userSlice.selectedChatName
   );
+
+  const { selectedChatIdentity, selectedChatType } = useSelector(
+    (state: AppRootState) => state.userSlice
+  );
+
+  const { users: allPrivateMessages, groups: allGroupMessages } = useSelector(
+    (state: AppRootState) => state.chatSlice
+  );
+
   const [inputMessage, setInputMessage] = useState("");
-  const [messageList, setMessageList] = useState<IMessage[]>(mockMessageList);
   const [selectedFile, setSelectedFile] = useState<File | undefined>(undefined);
 
   const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -74,7 +82,9 @@ export default function RightSide() {
         {name ?? "Please select a chat first"}
         <FaPen size={15} className="cursor-pointer" />
       </div>
-      <MessageList messageList={messageList} />
+      {selectedChatIdentity && (
+        <MessageList messageList={allGroupMessages[selectedChatIdentity]} />
+      )}
       <div className="h-[10%] bg-[#bfbec2] flex items-center ps-6 pe-4 py-2 relative">
         <label htmlFor="file-input">
           <FaImage size={30} color="#2C2E43" className="cursor-pointer" />

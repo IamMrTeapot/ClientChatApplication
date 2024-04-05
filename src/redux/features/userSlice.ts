@@ -4,12 +4,14 @@ export interface UserState {
   user: string | null;
   selectedChatName: string | null;
   selectedChatIdentity: string | null;
+  selectedChatType: "users" | "groups" | null;
 }
 
 const initialState: UserState = {
   user: null,
   selectedChatName: null,
   selectedChatIdentity: null,
+  selectedChatType: null,
 };
 
 export const userSlice = createSlice({
@@ -24,14 +26,20 @@ export const userSlice = createSlice({
     },
     selectChat: (
       state,
-      action: PayloadAction<{ name: string; identity: string }>
+      action: PayloadAction<{
+        name: string;
+        identity: string;
+        isGroup: boolean;
+      }>
     ) => {
       state.selectedChatName = action.payload.name;
       state.selectedChatIdentity = action.payload.identity;
+      state.selectedChatType = action.payload.isGroup ? "groups" : "users";
     },
     deselectChat: (state) => {
       state.selectedChatName = null;
       state.selectedChatIdentity = null;
+      state.selectedChatType = null;
     },
   },
 });
