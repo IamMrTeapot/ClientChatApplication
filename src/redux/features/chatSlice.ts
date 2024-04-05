@@ -2,7 +2,11 @@ import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { IMessage } from "../../components/Message";
 
 export interface ChatState {
+  // I added nickname in private chat only for our renaming feature (UI, only)
+  // We will only works with identity in the backend
+  // And we will mess up with name, nickname in the frontend
   users: Record<string, { nickname: string; messages: IMessage[] }>;
+
   groups: Record<string, IMessage[]>;
 }
 
