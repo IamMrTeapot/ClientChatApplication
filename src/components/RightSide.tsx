@@ -8,48 +8,6 @@ import { mySocket } from "../config/socketClient";
 import { socketEmitChannel } from "../types/SocketTypes";
 import EditChatNameModal from "./EditChatNameModal";
 
-// const mockMessageList: IMessage[] = [
-//   {
-//     text: "Hi John, how are you?",
-//     isSender: true,
-//     name: "Jane Doe",
-//   },
-//   {
-//     text: "I'm good, Jane. Thanks for asking. How about you?",
-//     isSender: false,
-//     name: "John Doe",
-//   },
-//   {
-//     text: "I'm doing well, thank you. Are you ready for the meeting today?",
-//     isSender: true,
-//     name: "Jane Doe",
-//   },
-//   {
-//     text: "Yes, I've prepared the documents. See you there.",
-//     isSender: false,
-//     name: "John Doe",
-//   },
-//   {
-//     text: "Great, see you at the meeting.",
-//     isSender: true,
-//     name: "Jane Doe",
-//   },
-//   {
-//     text: "Sure, see you there.",
-//     isSender: false,
-//     name: "John Doe",
-//   },
-//   {
-//     text: "Bye for now.",
-//     isSender: true,
-//     name: "Jane Doe",
-//   },
-//   {
-//     text: "Goodbye, Jane.",
-//     isSender: false,
-//     name: "John Doe",
-//   },
-// ];
 export default function RightSide() {
   const name = useSelector(
     (state: AppRootState) => state.userSlice.selectedChatName
