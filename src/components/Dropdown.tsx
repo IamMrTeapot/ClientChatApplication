@@ -2,6 +2,7 @@ import { useState } from "react";
 import { MdKeyboardArrowDown, MdKeyboardArrowUp } from "react-icons/md";
 import DropdownItem, { IDropdownItem } from "./DropdownItem";
 import { FaPlus } from "react-icons/fa6";
+import CreateGroupChatModal from "./CreateGroupChatModal";
 
 export type DropdownType =
   | "PRIVATE_CHAT"
@@ -24,10 +25,10 @@ export default function Dropdown({
   dropdownList: IDropdownItem[];
 }) {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [showCreateGroupModal, setShowCreateGroupModal] = useState(false);
 
   const handleCreateGroup = () => {
-    //TODO: implement creating group
-    alert("Creating Group");
+    setShowCreateGroupModal(true);
   };
 
   return (
@@ -56,6 +57,12 @@ export default function Dropdown({
         dropdownList.map((item) => (
           <DropdownItem {...item} type={type} key={item.identity} />
         ))}
+      {type === "ALL_GROUPS" && showCreateGroupModal && (
+        <CreateGroupChatModal
+          isVisible={showCreateGroupModal}
+          onClose={() => setShowCreateGroupModal(false)}
+        />
+      )}
     </div>
   );
 }

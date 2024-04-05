@@ -17,6 +17,7 @@ import { updateGroupChat } from "./redux/features/chatSlice";
 
 function App() {
   const [showUsernameModal, setShowUsernameModal] = useState(true);
+  const [isEditModal, setIsEditModal] = useState(false);
   const { users, groups } = useSelector(
     (state: AppRootState) => state.chatSlice
   );
@@ -105,7 +106,12 @@ function App() {
 
   return (
     <main className="w-full h-screen overflow-y-hidden font-prompt">
-      <Header onEdit={() => setShowUsernameModal(true)} />
+      <Header
+        onEdit={() => {
+          setIsEditModal(true);
+          setShowUsernameModal(true);
+        }}
+      />
       <div className="flex bg-gray-400 h-full pt-[50px]">
         <div className="w-1/4 h-full">
           <LeftSide />
@@ -117,6 +123,7 @@ function App() {
       <UsernameModal
         isVisible={showUsernameModal}
         onClose={() => setShowUsernameModal(false)}
+        isEditModal={isEditModal}
       />
     </main>
   );

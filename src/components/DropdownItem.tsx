@@ -35,7 +35,7 @@ export default function DropdownItem({
   );
 
   const isFocus = selectedChatIdentity === identity;
-  const isGroup = type === "ALL_GROUPS";
+  const isGroup = type === "ALL_GROUPS" || type === "GROUP_CHAT";
 
   const handleJoinChat = useCallback((identity: string, isGroup: boolean) => {
     //TODO: implement joining private chat
