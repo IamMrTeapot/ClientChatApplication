@@ -16,13 +16,20 @@ export default function Message({
   return (
     <div className={`w-full flex px-4 ${isSender ? "justify-end" : ""}`}>
       <div>
-        {!isSender && <div>{name}</div>}
+        {!isSender && <div className="text-white">{name}</div>}
         <div
-          className={`py-3 px-4 rounded-md ${
-            isSender ? "bg-[#E7E7E7]" : "bg-[#FFD523]"
-          }  text-[#3B3B3B] w-fit`}
+          className={`flex items-end gap-3 ${
+            isSender ? "flex-row-reverse" : ""
+          }`}
         >
-          {text}
+          <div
+            className={`py-3 px-4 rounded-md ${
+              isSender ? "bg-[#E7E7E7]" : "bg-[#FFD523]"
+            }  text-[#3B3B3B] w-fit`}
+          >
+            {text}
+          </div>
+          <p className="text-sm">{time}</p>
         </div>
       </div>
     </div>

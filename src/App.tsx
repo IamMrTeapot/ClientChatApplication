@@ -72,6 +72,7 @@ function App() {
             text: response.message,
             isSender: response.from === username,
             time: formatUtils.formatStringTime(response.time),
+            name: response.from,
           },
         })
       );

@@ -6,6 +6,7 @@ import { useSelector } from "react-redux";
 import { AppRootState } from "../redux/store";
 import { mySocket } from "../config/socketClient";
 import { socketEmitChannel } from "../types/SocketTypes";
+import EditChatNameModal from "./EditChatNameModal";
 
 // const mockMessageList: IMessage[] = [
 //   {
@@ -65,6 +66,8 @@ export default function RightSide() {
   const [inputMessage, setInputMessage] = useState("");
   const [selectedFile, setSelectedFile] = useState<File | undefined>(undefined);
 
+  const [showEditChatNameModal, setShowEditChatNameModal] = useState(false);
+
   const handleKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === "Enter") {
       handleSendMessage();
@@ -104,8 +107,13 @@ export default function RightSide() {
       <div className="flex flex-col h-[90%]">
         <div className="h-[11%] py-4 bg-[#595260] flex items-center px-6 font-medium gap-4 text-xl">
           {name ?? "Please select a chat first"}
-          <FaPen size={15} className="cursor-pointer" />
+          <FaPen
+            size={15}
+            className="cursor-pointer"
+            onClick={() => setShowEditChatNameModal(true)}
+          />
         </div>
+        {/* TODO: Add Private Chat and fix logic here */}
         {selectedChatIdentity && (
           <MessageList messageList={allGroupMessages[selectedChatIdentity]} />
         )}
@@ -139,6 +147,13 @@ export default function RightSide() {
           onClick={handleSendMessage}
         />
       </div>
+      {selectedChatType && showEditChatNameModal && (
+        <EditChatNameModal
+          isVisible={showEditChatNameModal}
+          onClose={() => setShowEditChatNameModal(false)}
+          isGroup={selectedChatType === "groups"}
+        />
+      )}
     </div>
   );
 }

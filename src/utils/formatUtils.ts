@@ -10,7 +10,7 @@ export const formatUtils = {
     const minutes = String(date.getMinutes()).padStart(2, "0");
 
     // Formatted time string
-    const formattedTime = `${hours}:${minutes}`;
+    const formattedTime = `${hours}.${minutes}`;
     return formattedTime;
   },
 };
