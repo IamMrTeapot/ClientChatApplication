@@ -13,7 +13,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { setAvailableList } from "./redux/features/availableSlice";
 import { AppRootState } from "./redux/store";
 import { formatUtils } from "./utils/formatUtils";
-import { updateGroupChat } from "./redux/features/chatSlice";
+import { updateGroupChat, updatePrivateChat } from "./redux/features/chatSlice";
 
 function App() {
   const [showUsernameModal, setShowUsernameModal] = useState(true);
@@ -51,15 +51,15 @@ function App() {
           groups: response.groups
             .filter((group ) => (Boolean(group[0]) === true))
             .map((group) => ({
-              name: group,
-              identity: group,
+              name: group[1],
+              identity: group[1],
               hasModal: true,
           })),
           privateChats : response.groups
             .filter((group ) => (Boolean(group[0]) === false))
             .map((group) => ({
-              name: group,
-              identity: group,
+              name: group[1],
+              identity: group[1],
               hasModal: true,
           })),
         })
@@ -88,6 +88,20 @@ function App() {
         })
       );
     };
+    const handlePrivateChatResponse = (response: uniqueGroupResponse) => {
+      dispatch(
+        updatePrivateChat({
+          identity: response.chatName,
+          message: {
+            text: response.message,
+            isSender: response.from === username,
+            time: formatUtils.formatStringTime(response.time),
+            name: response.from,
+          },
+        })
+      );
+    };
+
 
     const handleJoinGroupChat = (identity: string) => {
       console.log("joining ", socketOnChannel.UNIQUE_GROUP(identity));
@@ -95,20 +109,22 @@ function App() {
       console.log("Finished joining group chat!");
     };
 
-    const handleJoinPrivateChat = () => {
-      console.log("Private Chat Joining is not implemented yet!");
+    const handleJoinPrivateChat = (targetUsername : string) => {
+      console.log("joining ", socketOnChannel.UNIQUE_PRIVATE(username || "",targetUsername));
+      mySocket.on(socketOnChannel.UNIQUE_PRIVATE(username || "",targetUsername), handlePrivateChatResponse);
+      console.log(`Finished joining private chat with ${targetUsername}!`);
     };
 
-    userKeys.forEach(() => {
-      handleJoinPrivateChat();
+    userKeys.forEach((targetUsername) => {
+      handleJoinPrivateChat(targetUsername);
     });
     groupKeys.forEach((group) => {
       handleJoinGroupChat(group);
     });
 
     return () => {
-      userKeys.forEach(() => {
-        //mySocket.off(socketOnChannel.UNIQUE_GROUP(user));
+      userKeys.forEach((user) => {
+        mySocket.off(socketOnChannel.UNIQUE_PRIVATE(username || "",user) , handlePrivateChatResponse);
       });
       groupKeys.forEach((group) => {
         mySocket.off(socketOnChannel.UNIQUE_GROUP(group), handleGroupResponse);

@@ -4,7 +4,7 @@ import Dropdown from "./Dropdown";
 import { IDropdownItem } from "./DropdownItem";
 
 export default function LeftSide() {
-  const { users: userList, groups: groupList , privateChats : privateChatList} = useSelector(
+  const { users: userList, groups: groupList } = useSelector(
     (state: AppRootState) => state.availableSlice
   );
 
@@ -12,8 +12,8 @@ export default function LeftSide() {
     (state: AppRootState) => state.chatSlice
   );
   // For Testing only .... 
-  console.log("groups",groupList);
-  console.log("private",privateChatList);
+  console.log("groups messsage",allGroupMessages);
+  console.log("private message",allPrivateMessages);
   // 
 
   const joinedPrivateChatKeys = Object.keys(allPrivateMessages);
@@ -36,7 +36,7 @@ export default function LeftSide() {
       hasModal: false,
     };
   });
-
+  
   return (
     <div
       className="bg-[#E7E7E7] h-full flex flex-col overflow-auto 

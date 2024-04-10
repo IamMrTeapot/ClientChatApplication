@@ -26,6 +26,7 @@ export const chatSlice = createSlice({
         message: IMessage | null;
       }>
     ) => {
+      console.log("Update group Chat",action.payload)
       if (state.groups[action.payload.identity]) {
         if (action.payload.message === null) return;
         state.groups[action.payload.identity].push(action.payload.message);
@@ -46,15 +47,16 @@ export const chatSlice = createSlice({
         message: IMessage | null;
       }>
     ) => {
+      console.log("Update private Chat",action.payload)
       if (state.users[action.payload.identity]) {
         if (action.payload.message === null) return;
         state.users[action.payload.identity].messages.push(action.payload.message);
       } else {
         if (action.payload.message === null) {
-          state.users[action.payload.identity].messages = [];
+          state.users[action.payload.identity] = { nickname : action.payload.identity, messages : []};
           return;
         }
-        state.users[action.payload.identity].messages = [action.payload.message];
+        state.users[action.payload.identity] = { nickname : action.payload.identity, messages : [action.payload.message]};
       }
     },
     /*REMINDER: updateGroupChatName should be from backend,

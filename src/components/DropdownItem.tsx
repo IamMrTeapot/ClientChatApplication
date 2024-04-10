@@ -7,7 +7,7 @@ import { selectChat } from "../redux/features/userSlice";
 import { mySocket } from "../config/socketClient";
 import { socketEmitChannel } from "../types/SocketTypes";
 import { DropdownType } from "./Dropdown";
-import { updateGroupChat } from "../redux/features/chatSlice";
+import { updateGroupChat, updatePrivateChat } from "../redux/features/chatSlice";
 
 const focusClasses = "bg-white text-black border-2 border-black";
 const blurClasses = "bg-[#9a979f] text-white";
@@ -43,7 +43,8 @@ export default function DropdownItem({
       dispatch(updateGroupChat({ identity, message: null }));
       mySocket.emit(socketEmitChannel.JOIN_GROUP, identity);
     } else {
-      alert("Private Chat Joining is not implemented yet!");
+      dispatch(updatePrivateChat({identity, message : null}));
+      mySocket.emit(socketEmitChannel.JOIN_PRIVATE, identity);
     }
   }, []);
 
