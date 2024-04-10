@@ -8,6 +8,7 @@ import { mySocket } from "../config/socketClient";
 import { socketEmitChannel } from "../types/SocketTypes";
 import EditChatNameModal from "./EditChatNameModal";
 import { formatUtils } from "../utils/formatUtils";
+import { imageUtils } from "../utils/imageUtills";
 
 export default function RightSide() {
   const name = useSelector(
@@ -28,7 +29,11 @@ export default function RightSide() {
 
   const handleKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === "Enter") {
-      handleSendMessage();
+      if(selectedFile === undefined) {
+        handleSendMessage()
+      }else{
+        handleSendImage()
+      }
     }
   };
 
@@ -40,10 +45,33 @@ export default function RightSide() {
   const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     setSelectedFile(file);
-
+    
     // Debugging: Display the file name
     console.log(file?.name);
   };
+
+  const handleSendImage = async() =>{
+    if (!selectedFile) return;
+    const base64Image = await imageUtils.convertToBase64(selectedFile);
+    console.log(selectedChatType);
+    if (selectedChatType === "groups") {
+      mySocket.emit(
+        socketEmitChannel.SEND_GROUP_MESSAGE,
+        base64Image,
+        selectedChatIdentity,
+        false
+      );
+    } else if (selectedChatType === "users") {
+      mySocket.emit(
+        socketEmitChannel.SEND_PRIVATE_MESSAGE,
+        base64Image,
+        formatUtils.getTargetUsername(selectedChatIdentity || "",username || ""),
+        false
+      );
+
+    }
+    clearInput();
+  }
 
   const handleSendMessage = () => {
     if (!inputMessage) return;
@@ -52,13 +80,15 @@ export default function RightSide() {
       mySocket.emit(
         socketEmitChannel.SEND_GROUP_MESSAGE,
         inputMessage,
-        selectedChatIdentity
+        selectedChatIdentity,
+        true
       );
     } else if (selectedChatType === "users") {
       mySocket.emit(
         socketEmitChannel.SEND_PRIVATE_MESSAGE,
         inputMessage,
-        formatUtils.getTargetUsername(selectedChatIdentity || "",username || "")
+        formatUtils.getTargetUsername(selectedChatIdentity || "",username || ""),
+        true
       );
 
     }
@@ -107,7 +137,7 @@ export default function RightSide() {
           color="#2C2E43"
           size={30}
           className="absolute right-[25px] cursor-pointer"
-          onClick={handleSendMessage}
+          onClick={selectedFile === undefined ? handleSendMessage : handleSendImage}
         />
       </div>
       {selectedChatType && showEditChatNameModal && (

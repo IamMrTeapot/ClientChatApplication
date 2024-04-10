@@ -4,13 +4,11 @@ import { IDropdownItem } from "../../components/DropdownItem";
 export interface AvailableState {
   users: IDropdownItem[];
   groups: IDropdownItem[];
-  privateChats : IDropdownItem[];
 }
 
 const initialState: AvailableState = {
   users: [],
   groups: [],
-  privateChats : [],
 };
 
 export const availableSlice = createSlice({
@@ -19,11 +17,10 @@ export const availableSlice = createSlice({
   reducers: {
     setAvailableList: (
       state,
-      action: PayloadAction<{ users: IDropdownItem[]; groups: IDropdownItem[]; privateChats : IDropdownItem[]; }>
+      action: PayloadAction<{ users: IDropdownItem[]; groups: IDropdownItem[]; }>
     ) => {
       state.users = action.payload.users;
       state.groups = action.payload.groups;
-      state.privateChats = action.payload.privateChats;
     },
   },
 });

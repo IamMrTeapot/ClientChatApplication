@@ -55,14 +55,7 @@ function App() {
               name: group[1],
               identity: group[1],
               hasModal: true,
-          })),
-          privateChats : response.groups
-            .filter((group ) => (Boolean(group[0]) === false))
-            .map((group) => ({
-              name: group[1],
-              identity: group[1],
-              hasModal: true,
-          })),
+          }))
         })
       );
     };
@@ -85,6 +78,7 @@ function App() {
             isSender: response.from === username,
             time: formatUtils.formatStringTime(response.time),
             name: response.from,
+            isText : response.isText
           },
         })
       );
@@ -98,6 +92,7 @@ function App() {
             isSender: response.from === username,
             time: formatUtils.formatStringTime(response.time),
             name: response.from,
+            isText : response.isText
           },
         })
       );

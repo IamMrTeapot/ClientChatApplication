@@ -26,4 +26,5 @@ export type uniqueGroupResponse = {
   from: string;
   message: string;
   time: string;
+  isText : boolean;
 };
