@@ -22,7 +22,10 @@ function App() {
     (state: AppRootState) => state.chatSlice
   );
   const username = useSelector((state: AppRootState) => state.userSlice.user);
-  const userKeys = Object.keys(users);
+  const userKeys = Object.keys(users)
+                   .map((user) => user.split("-"))
+                   .filter((user) => user.includes(username || ""))
+                   .map((user) => user[1] === username ? user[0] : user[1])
   const groupKeys = Object.keys(groups);
 
   const dispatch = useDispatch();
@@ -110,8 +113,11 @@ function App() {
     };
 
     const handleJoinPrivateChat = (targetUsername : string) => {
-      console.log("joining ", socketOnChannel.UNIQUE_PRIVATE(username || "",targetUsername));
-      mySocket.on(socketOnChannel.UNIQUE_PRIVATE(username || "",targetUsername), handlePrivateChatResponse);
+      if(username){
+        
+        console.log("joining ", socketOnChannel.UNIQUE_PRIVATE(username,targetUsername));
+        mySocket.on(socketOnChannel.UNIQUE_PRIVATE(username,targetUsername), handlePrivateChatResponse);
+      }
       console.log(`Finished joining private chat with ${targetUsername}!`);
     };
 
@@ -124,7 +130,9 @@ function App() {
 
     return () => {
       userKeys.forEach((user) => {
-        mySocket.off(socketOnChannel.UNIQUE_PRIVATE(username || "",user) , handlePrivateChatResponse);
+        if(username){
+          mySocket.off(socketOnChannel.UNIQUE_PRIVATE(username,user) , handlePrivateChatResponse);
+        }
       });
       groupKeys.forEach((group) => {
         mySocket.off(socketOnChannel.UNIQUE_GROUP(group), handleGroupResponse);

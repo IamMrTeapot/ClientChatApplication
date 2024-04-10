@@ -16,5 +16,9 @@ export const formatUtils = {
   hashPrivateChatName (username1 : string,username2 : string) : string{
     if(username2 < username1) [username1,username2] = [username2,username1]
     return `${username1}-${username2}`;
-  } 
+  },
+  getTargetUsername (hashUsername : string , myUsername : string) : string {
+    const splitUsername = hashUsername.split("-");
+    return splitUsername[0] === myUsername ? splitUsername[1] : splitUsername[0];
+  }
 };
