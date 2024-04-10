@@ -56,6 +56,7 @@ export default function RightSide() {
         selectedChatIdentity
       );
     } else if (selectedChatType === "users") {
+      console.log(selectedChatIdentity);
     }
     clearInput();
   };

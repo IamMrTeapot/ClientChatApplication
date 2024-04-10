@@ -26,7 +26,8 @@ function App() {
   const groupKeys = Object.keys(groups);
 
   const dispatch = useDispatch();
-
+  console.log("userKeys",userKeys);
+  console.log("groupKeys",groupKeys);
   useEffect(() => {
     mySocket.on(socketOnChannel.ERROR, (message: string) => {
       alert(message);
@@ -47,10 +48,19 @@ function App() {
             identity: user,
             hasModal: true,
           })),
-          groups: response.groups.map((group) => ({
-            name: group,
-            identity: group,
-            hasModal: true,
+          groups: response.groups
+            .filter((group ) => (Boolean(group[0]) === true))
+            .map((group) => ({
+              name: group,
+              identity: group,
+              hasModal: true,
+          })),
+          privateChats : response.groups
+            .filter((group ) => (Boolean(group[0]) === false))
+            .map((group) => ({
+              name: group,
+              identity: group,
+              hasModal: true,
           })),
         })
       );
@@ -61,6 +71,7 @@ function App() {
     return () => {
       mySocket.off(socketOnChannel.AVAILABLE, handleAvailableResponse);
     };
+
   }, []);
 
   useEffect(() => {

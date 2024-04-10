@@ -13,4 +13,8 @@ export const formatUtils = {
     const formattedTime = `${hours}.${minutes}`;
     return formattedTime;
   },
+  hashPrivateChatName (username1 : string,username2 : string) : string{
+    if(username2 < username1) [username1,username2] = [username2,username1]
+    return `${username1}-${username2}`;
+  } 
 };

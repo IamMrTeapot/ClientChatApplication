@@ -4,13 +4,17 @@ import Dropdown from "./Dropdown";
 import { IDropdownItem } from "./DropdownItem";
 
 export default function LeftSide() {
-  const { users: userList, groups: groupList } = useSelector(
+  const { users: userList, groups: groupList , privateChats : privateChatList} = useSelector(
     (state: AppRootState) => state.availableSlice
   );
 
   const { users: allPrivateMessages, groups: allGroupMessages } = useSelector(
     (state: AppRootState) => state.chatSlice
   );
+  // For Testing only .... 
+  console.log("groups",groupList);
+  console.log("private",privateChatList);
+  // 
 
   const joinedPrivateChatKeys = Object.keys(allPrivateMessages);
   const joinedGroupChatKeys = Object.keys(allGroupMessages);
