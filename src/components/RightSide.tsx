@@ -7,13 +7,13 @@ import { AppRootState } from "../redux/store";
 import { mySocket } from "../config/socketClient";
 import { socketEmitChannel } from "../types/SocketTypes";
 import EditChatNameModal from "./EditChatNameModal";
+import { formatUtils } from "../utils/formatUtils";
 
 export default function RightSide() {
   const name = useSelector(
     (state: AppRootState) => state.userSlice.selectedChatName
   );
-
-  const { selectedChatIdentity, selectedChatType } = useSelector(
+  const { user : username ,selectedChatIdentity, selectedChatType } = useSelector(
     (state: AppRootState) => state.userSlice
   );
 
@@ -49,14 +49,18 @@ export default function RightSide() {
     if (!inputMessage) return;
     console.log(selectedChatType);
     if (selectedChatType === "groups") {
-      console.log(selectedChatIdentity);
       mySocket.emit(
         socketEmitChannel.SEND_GROUP_MESSAGE,
         inputMessage,
         selectedChatIdentity
       );
     } else if (selectedChatType === "users") {
-      console.log(selectedChatIdentity);
+      mySocket.emit(
+        socketEmitChannel.SEND_PRIVATE_MESSAGE,
+        inputMessage,
+        formatUtils.getTargetUsername(selectedChatIdentity || "",username || "")
+      );
+
     }
     clearInput();
   };
@@ -74,7 +78,7 @@ export default function RightSide() {
         </div>
         {/* TODO: Add Private Chat and fix logic here */}
         {selectedChatIdentity && (
-          <MessageList messageList={allGroupMessages[selectedChatIdentity]} />
+          <MessageList messageList={selectedChatType === "groups" ? allGroupMessages[selectedChatIdentity] : allPrivateMessages[selectedChatIdentity].messages} />
         )}
       </div>
       <div className="h-[10%] bg-[#bfbec2] flex items-center ps-6 pe-4 py-2 relative">

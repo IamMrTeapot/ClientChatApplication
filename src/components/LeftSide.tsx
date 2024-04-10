@@ -49,7 +49,7 @@ export default function LeftSide() {
     >
       <Dropdown type={"PRIVATE_CHAT"} dropdownList={joinedPrivateChatList} />
       <Dropdown type={"GROUP_CHAT"} dropdownList={joinedGroupChatList} />
-      <Dropdown type={"ALL_USERS"} dropdownList={userList} />
+      <Dropdown type={"ALL_USERS"} dropdownList={userList.filter((user) => user.identity !== username)} />
       <Dropdown type={"ALL_GROUPS"} dropdownList={groupList} />
     </div>
   );

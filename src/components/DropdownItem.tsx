@@ -39,7 +39,6 @@ export default function DropdownItem({
   const isGroup = type === "ALL_GROUPS" || type === "GROUP_CHAT";
 
   const handleJoinChat = useCallback((identity: string, isGroup: boolean) => {
-    //TODO: implement joining private chat
     if (isGroup) {
       dispatch(updateGroupChat({ identity, message: null }));
       mySocket.emit(socketEmitChannel.JOIN_GROUP, identity);

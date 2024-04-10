@@ -29,8 +29,6 @@ function App() {
   const groupKeys = Object.keys(groups);
 
   const dispatch = useDispatch();
-  console.log("userKeys",userKeys);
-  console.log("groupKeys",groupKeys);
   useEffect(() => {
     mySocket.on(socketOnChannel.ERROR, (message: string) => {
       alert(message);
@@ -114,7 +112,6 @@ function App() {
 
     const handleJoinPrivateChat = (targetUsername : string) => {
       if(username){
-        
         console.log("joining ", socketOnChannel.UNIQUE_PRIVATE(username,targetUsername));
         mySocket.on(socketOnChannel.UNIQUE_PRIVATE(username,targetUsername), handlePrivateChatResponse);
       }

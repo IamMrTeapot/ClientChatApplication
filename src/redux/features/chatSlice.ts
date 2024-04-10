@@ -26,7 +26,6 @@ export const chatSlice = createSlice({
         message: IMessage | null;
       }>
     ) => {
-      console.log("Update group Chat",action.payload)
       if (state.groups[action.payload.identity]) {
         if (action.payload.message === null) return;
         state.groups[action.payload.identity].push(action.payload.message);
@@ -47,7 +46,6 @@ export const chatSlice = createSlice({
         message: IMessage | null;
       }>
     ) => {
-      console.log("Update private Chat",action.payload)
       if (state.users[action.payload.identity]) {
         if (action.payload.message === null) return;
         state.users[action.payload.identity].messages.push(action.payload.message);
