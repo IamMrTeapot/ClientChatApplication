@@ -45,9 +45,6 @@ export default function RightSide() {
   const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     setSelectedFile(file);
-    
-    // Debugging: Display the file name
-    console.log(file?.name);
   };
 
   const handleSendImage = async() =>{
@@ -106,7 +103,6 @@ export default function RightSide() {
             onClick={() => setShowEditChatNameModal(true)}
           />
         </div>
-        {/* TODO: Add Private Chat and fix logic here */}
         {selectedChatIdentity && (
           <MessageList messageList={selectedChatType === "groups" ? allGroupMessages[selectedChatIdentity] : allPrivateMessages[selectedChatIdentity].messages} />
         )}
@@ -125,7 +121,7 @@ export default function RightSide() {
           className="bg-white ms-6 w-full h-[35px] 
           rounded-xl flex items-center justify-between
           ps-4 pe-2 text-black outline-1"
-          placeholder="Message..."
+          placeholder={selectedFile === undefined ? "Message..." : "Press Enter to send image"}
           type="text"
           onChange={(e) => {
             setInputMessage(e.target.value);

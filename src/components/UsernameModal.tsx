@@ -20,16 +20,16 @@ export default function UsernameModal({
   const [inputUsername, setInputUsername] = useState<string>(username || "");
 
   const handleClose = () => {
-    if (username === "") {
-      alert("Please enter a username");
+    if (username === "" || inputUsername.includes("-")) {
+      alert("Please enter a valid username");
       return;
     }
     onClose();
   };
 
   const handleConfirm = () => {
-    if (inputUsername === "") {
-      alert("Please enter a username");
+    if (inputUsername === "" || inputUsername.includes("-")) {
+      alert("Please enter a valid username");
       return;
     }
     dispatch(connection(inputUsername));
