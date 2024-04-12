@@ -7,7 +7,8 @@ import { selectChat } from "../redux/features/userSlice";
 import { mySocket } from "../config/socketClient";
 import { socketEmitChannel } from "../types/SocketTypes";
 import { DropdownType } from "./Dropdown";
-import { updateGroupChat } from "../redux/features/chatSlice";
+import { updateGroupChat, updatePrivateChat } from "../redux/features/chatSlice";
+import { formatUtils } from "../utils/formatUtils";
 
 const focusClasses = "bg-white text-black border-2 border-black";
 const blurClasses = "bg-[#9a979f] text-white";
@@ -33,17 +34,17 @@ export default function DropdownItem({
   const { selectedChatIdentity } = useSelector(
     (state: AppRootState) => state.userSlice
   );
-
+  const username = useSelector((state: AppRootState) => state.userSlice.user);
   const isFocus = selectedChatIdentity === identity;
   const isGroup = type === "ALL_GROUPS" || type === "GROUP_CHAT";
 
   const handleJoinChat = useCallback((identity: string, isGroup: boolean) => {
-    //TODO: implement joining private chat
     if (isGroup) {
       dispatch(updateGroupChat({ identity, message: null }));
       mySocket.emit(socketEmitChannel.JOIN_GROUP, identity);
     } else {
-      alert("Private Chat Joining is not implemented yet!");
+      dispatch(updatePrivateChat({ identity, message : null}));
+      mySocket.emit(socketEmitChannel.JOIN_PRIVATE, formatUtils.getTargetUsername(identity,username || ""));
     }
   }, []);
 
@@ -77,7 +78,11 @@ export default function DropdownItem({
             <JoinChatDropDown
               isGroup={isGroup}
               onJoin={() => {
-                handleJoinChat(identity, isGroup);
+                if(!isGroup ){
+                  if(username) handleJoinChat(formatUtils.hashPrivateChatName(identity,username),isGroup)
+                }else{
+                  handleJoinChat(identity, isGroup);
+                }
                 setIsModalOpen(false);
               }}
               onCancel={() => setIsModalOpen(false)}

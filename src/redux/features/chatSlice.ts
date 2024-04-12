@@ -39,7 +39,24 @@ export const chatSlice = createSlice({
     },
 
     //TODO: Add updatePrivateChat reducer
-
+    updatePrivateChat: (
+      state,
+      action: PayloadAction<{
+        identity: string;
+        message: IMessage | null;
+      }>
+    ) => {
+      if (state.users[action.payload.identity]) {
+        if (action.payload.message === null) return;
+        state.users[action.payload.identity].messages.push(action.payload.message);
+      } else {
+        if (action.payload.message === null) {
+          state.users[action.payload.identity] = { nickname : action.payload.identity, messages : []};
+          return;
+        }
+        state.users[action.payload.identity] = { nickname : action.payload.identity, messages : [action.payload.message]};
+      }
+    },
     /*REMINDER: updateGroupChatName should be from backend,
      *          I believe we don't have this feature */
 
@@ -52,5 +69,5 @@ export const chatSlice = createSlice({
   },
 });
 
-export const { updateGroupChat, updatePrivateChatName } = chatSlice.actions;
+export const { updateGroupChat, updatePrivateChatName , updatePrivateChat } = chatSlice.actions;
 export default chatSlice.reducer;

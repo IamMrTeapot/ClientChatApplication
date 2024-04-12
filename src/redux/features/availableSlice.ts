@@ -17,7 +17,7 @@ export const availableSlice = createSlice({
   reducers: {
     setAvailableList: (
       state,
-      action: PayloadAction<{ users: IDropdownItem[]; groups: IDropdownItem[] }>
+      action: PayloadAction<{ users: IDropdownItem[]; groups: IDropdownItem[]; }>
     ) => {
       state.users = action.payload.users;
       state.groups = action.payload.groups;

@@ -13,7 +13,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { setAvailableList } from "./redux/features/availableSlice";
 import { AppRootState } from "./redux/store";
 import { formatUtils } from "./utils/formatUtils";
-import { updateGroupChat } from "./redux/features/chatSlice";
+import { updateGroupChat, updatePrivateChat } from "./redux/features/chatSlice";
 
 function App() {
   const [showUsernameModal, setShowUsernameModal] = useState(true);
@@ -22,11 +22,13 @@ function App() {
     (state: AppRootState) => state.chatSlice
   );
   const username = useSelector((state: AppRootState) => state.userSlice.user);
-  const userKeys = Object.keys(users);
+  const userKeys = Object.keys(users)
+                   .map((user) => user.split("-"))
+                   .filter((user) => user.includes(username || ""))
+                   .map((user) => user[1] === username ? user[0] : user[1])
   const groupKeys = Object.keys(groups);
 
   const dispatch = useDispatch();
-
   useEffect(() => {
     mySocket.on(socketOnChannel.ERROR, (message: string) => {
       alert(message);
@@ -47,11 +49,13 @@ function App() {
             identity: user,
             hasModal: true,
           })),
-          groups: response.groups.map((group) => ({
-            name: group,
-            identity: group,
-            hasModal: true,
-          })),
+          groups: response.groups
+            .filter((group ) => (Boolean(group[0]) === true))
+            .map((group) => ({
+              name: group[1],
+              identity: group[1],
+              hasModal: true,
+          }))
         })
       );
     };
@@ -61,6 +65,7 @@ function App() {
     return () => {
       mySocket.off(socketOnChannel.AVAILABLE, handleAvailableResponse);
     };
+
   }, []);
 
   useEffect(() => {
@@ -73,10 +78,26 @@ function App() {
             isSender: response.from === username,
             time: formatUtils.formatStringTime(response.time),
             name: response.from,
+            isText : response.isText
           },
         })
       );
     };
+    const handlePrivateChatResponse = (response: uniqueGroupResponse) => {
+      dispatch(
+        updatePrivateChat({
+          identity: response.chatName,
+          message: {
+            text: response.message,
+            isSender: response.from === username,
+            time: formatUtils.formatStringTime(response.time),
+            name: response.from,
+            isText : response.isText
+          },
+        })
+      );
+    };
+
 
     const handleJoinGroupChat = (identity: string) => {
       console.log("joining ", socketOnChannel.UNIQUE_GROUP(identity));
@@ -84,20 +105,26 @@ function App() {
       console.log("Finished joining group chat!");
     };
 
-    const handleJoinPrivateChat = () => {
-      console.log("Private Chat Joining is not implemented yet!");
+    const handleJoinPrivateChat = (targetUsername : string) => {
+      if(username){
+        console.log("joining ", socketOnChannel.UNIQUE_PRIVATE(username,targetUsername));
+        mySocket.on(socketOnChannel.UNIQUE_PRIVATE(username,targetUsername), handlePrivateChatResponse);
+      }
+      console.log(`Finished joining private chat with ${targetUsername}!`);
     };
 
-    userKeys.forEach(() => {
-      handleJoinPrivateChat();
+    userKeys.forEach((targetUsername) => {
+      handleJoinPrivateChat(targetUsername);
     });
     groupKeys.forEach((group) => {
       handleJoinGroupChat(group);
     });
 
     return () => {
-      userKeys.forEach(() => {
-        //mySocket.off(socketOnChannel.UNIQUE_GROUP(user));
+      userKeys.forEach((user) => {
+        if(username){
+          mySocket.off(socketOnChannel.UNIQUE_PRIVATE(username,user) , handlePrivateChatResponse);
+        }
       });
       groupKeys.forEach((group) => {
         mySocket.off(socketOnChannel.UNIQUE_GROUP(group), handleGroupResponse);
