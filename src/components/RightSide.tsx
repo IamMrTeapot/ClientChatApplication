@@ -11,12 +11,11 @@ import { formatUtils } from "../utils/formatUtils";
 import { imageUtils } from "../utils/imageUtills";
 
 export default function RightSide() {
-  const name = useSelector(
-    (state: AppRootState) => state.userSlice.selectedChatName
-  );
-  const { user : username ,selectedChatIdentity, selectedChatType } = useSelector(
-    (state: AppRootState) => state.userSlice
-  );
+  const {
+    user: username,
+    selectedChatIdentity,
+    selectedChatType,
+  } = useSelector((state: AppRootState) => state.userSlice);
 
   const { users: allPrivateMessages, groups: allGroupMessages } = useSelector(
     (state: AppRootState) => state.chatSlice
@@ -29,10 +28,10 @@ export default function RightSide() {
 
   const handleKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === "Enter") {
-      if(selectedFile === undefined) {
-        handleSendMessage()
-      }else{
-        handleSendImage()
+      if (selectedFile === undefined) {
+        handleSendMessage();
+      } else {
+        handleSendImage();
       }
     }
   };
@@ -47,7 +46,7 @@ export default function RightSide() {
     setSelectedFile(file);
   };
 
-  const handleSendImage = async() =>{
+  const handleSendImage = async () => {
     if (!selectedFile) return;
     const base64Image = await imageUtils.convertToBase64(selectedFile);
     console.log(selectedChatType);
@@ -62,13 +61,15 @@ export default function RightSide() {
       mySocket.emit(
         socketEmitChannel.SEND_PRIVATE_MESSAGE,
         base64Image,
-        formatUtils.getTargetUsername(selectedChatIdentity || "",username || ""),
+        formatUtils.getTargetUsername(
+          selectedChatIdentity || "",
+          username || ""
+        ),
         false
       );
-
     }
     clearInput();
-  }
+  };
 
   const handleSendMessage = () => {
     if (!inputMessage) return;
@@ -84,19 +85,27 @@ export default function RightSide() {
       mySocket.emit(
         socketEmitChannel.SEND_PRIVATE_MESSAGE,
         inputMessage,
-        formatUtils.getTargetUsername(selectedChatIdentity || "",username || ""),
+        formatUtils.getTargetUsername(
+          selectedChatIdentity || "",
+          username || ""
+        ),
         true
       );
-
     }
     clearInput();
   };
+
+  const name = !selectedChatIdentity
+    ? "Please select a chat first"
+    : selectedChatType === "groups"
+    ? selectedChatIdentity
+    : allPrivateMessages[selectedChatIdentity].nickname;
 
   return (
     <div className="bg-[#3B3B3B] h-full text-white flex flex-col justify-between">
       <div className="flex flex-col h-[90%]">
         <div className="h-[11%] py-4 bg-[#595260] flex items-center px-6 font-medium gap-4 text-xl">
-          {name ?? "Please select a chat first"}
+          {name}
           <FaPen
             size={15}
             className="cursor-pointer"
@@ -104,7 +113,13 @@ export default function RightSide() {
           />
         </div>
         {selectedChatIdentity && (
-          <MessageList messageList={selectedChatType === "groups" ? allGroupMessages[selectedChatIdentity] : allPrivateMessages[selectedChatIdentity].messages} />
+          <MessageList
+            messageList={
+              selectedChatType === "groups"
+                ? allGroupMessages[selectedChatIdentity]
+                : allPrivateMessages[selectedChatIdentity].messages
+            }
+          />
         )}
       </div>
       <div className="h-[10%] bg-[#bfbec2] flex items-center ps-6 pe-4 py-2 relative">
@@ -121,7 +136,11 @@ export default function RightSide() {
           className="bg-white ms-6 w-full h-[35px] 
           rounded-xl flex items-center justify-between
           ps-4 pe-2 text-black outline-1"
-          placeholder={selectedFile === undefined ? "Message..." : "Press Enter to send image"}
+          placeholder={
+            selectedFile === undefined
+              ? "Message..."
+              : "Press Enter to send image"
+          }
           type="text"
           onChange={(e) => {
             setInputMessage(e.target.value);
@@ -133,7 +152,9 @@ export default function RightSide() {
           color="#2C2E43"
           size={30}
           className="absolute right-[25px] cursor-pointer"
-          onClick={selectedFile === undefined ? handleSendMessage : handleSendImage}
+          onClick={
+            selectedFile === undefined ? handleSendMessage : handleSendImage
+          }
         />
       </div>
       {selectedChatType && showEditChatNameModal && (
