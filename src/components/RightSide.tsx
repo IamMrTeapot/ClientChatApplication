@@ -106,11 +106,13 @@ export default function RightSide() {
       <div className="flex flex-col h-[90%]">
         <div className="h-[11%] py-4 bg-[#595260] flex items-center px-6 font-medium gap-4 text-xl">
           {name}
-          <FaPen
-            size={15}
-            className="cursor-pointer"
-            onClick={() => setShowEditChatNameModal(true)}
-          />
+          {selectedChatType === "users" && (
+            <FaPen
+              size={15}
+              className="cursor-pointer"
+              onClick={() => setShowEditChatNameModal(true)}
+            />
+          )}
         </div>
         {selectedChatIdentity && (
           <MessageList
