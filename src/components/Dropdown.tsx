@@ -24,7 +24,7 @@ export default function Dropdown({
   type: DropdownType;
   dropdownList: IDropdownItem[];
 }) {
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(true);
   const [showCreateGroupModal, setShowCreateGroupModal] = useState(false);
 
   const handleCreateGroup = () => {
